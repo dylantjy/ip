@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -e
+
+# Compile to ./out
+mkdir -p out
+javac -d out src/main/java/*.java
+
+# Run Bruh with redirected input -> actual.txt
+java -cp out Bruh < text-ui-test/input.txt > text-ui-test/actual.txt
+
+# Compare expected vs actual
+if diff -u text-ui-test/expected.txt text-ui-test/actual.txt; then
+  echo "✅ Test passed"
+else
+  echo "❌ Test failed"
+  exit 1
+fi
