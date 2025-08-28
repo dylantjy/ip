@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="ANALYZE_INJECTED_CODE" value="false" />
+    <option name="SCOPE_TYPE" value="3" />
+  </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="3011341b-04d5-4529-9cf5-6ab869a730b1" name="Changes" comment="Added the option for users to delete tasks when they deem fit">
+      <change afterPath="$PROJECT_DIR$/data/bruh.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/out/bruh/Bruh$1.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/out/bruh/Bruh.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/out/bruh/BruhException.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/out/bruh/DateUtil.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/out/bruh/Deadline.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/out/bruh/Event.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/out/bruh/Parser$CommandType.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/out/bruh/Parser$Parsed.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/out/bruh/Parser.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/out/bruh/Storage.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/out/bruh/Task.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/out/bruh/TaskList.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/out/bruh/Todo.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/out/bruh/Ui.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/bruh/Bruh.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/bruh/BruhException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/bruh/DateUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/bruh/Deadline.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/bruh/Event.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/bruh/Parser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/bruh/Storage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/bruh/Task.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/bruh/TaskList.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/bruh/Todo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/bruh/Ui.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/bruh.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/Bruh.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/BruhException.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/Deadline.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/Event.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/Task.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/Todo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/bruh/Bruh.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/bruh/BruhException.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/bruh/Deadline.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/bruh/Event.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/bruh/Task.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/bruh/Todo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Bruh.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BruhException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/DateUtil.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Deadline.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Event.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Parser.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Storage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Task.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/TaskList.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Todo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Ui.java" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="MIXED" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="31b9YD6sjEPAgrbo9ICMwXtRFA6" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Bruh.executor&quot;: &quot;Run&quot;,
+    &quot;Application.bruh.Bruh.executor&quot;: &quot;Run&quot;,
+    &quot;Application.main.bruh.Bruh.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/dylanteo/bruh&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="main.bruh" />
+      <recent name="main" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="bruh.Bruh" />
+      <module name="bruh" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="bruh.Bruh" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="bruh.Bruh" />
+      <module name="bruh" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="bruh.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="GradleRunConfiguration" factoryName="Gradle">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list />
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.bruh.Bruh" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="3011341b-04d5-4529-9cf5-6ab869a730b1" name="Changes" comment="" />
+      <created>1755781951384</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1755781951384</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Initial skeleton of Bruh chatbox">
+      <option name="closed" value="true" />
+      <created>1755782569984</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1755782569984</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Echo loop: Bruh repeats commands and exits on 'bye'">
+      <option name="closed" value="true" />
+      <created>1755803709009</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1755803709009</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Add in-memory task list: add items, list them, exit on 'bye'">
+      <option name="closed" value="true" />
+      <created>1755803863120</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1755803863120</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Add Task class and add support for mark/unmark commands">
+      <option name="closed" value="true" />
+      <created>1755804196538</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1755804196538</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Add Todo, Deadline, Event task types with inheritance; support /by, /from, /to parsing">
+      <option name="closed" value="true" />
+      <created>1755804597033</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1755804597033</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Added BruhException file to deal with handling errors">
+      <option name="closed" value="true" />
+      <created>1755807128864</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1755807128864</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Added the option for users to delete tasks when they deem fit">
+      <option name="closed" value="true" />
+      <created>1755836407829</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1755836407829</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Added the option for users to delete tasks when they deem fit">
+      <option name="closed" value="true" />
+      <created>1756361803533</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1756361803533</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Added the option for users to delete tasks when they deem fit">
+      <option name="closed" value="true" />
+      <created>1756362211683</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1756362211683</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Added the option for users to delete tasks when they deem fit">
+      <option name="closed" value="true" />
+      <created>1756362292170</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1756362292170</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Initial skeleton of Bruh chatbox" />
+    <MESSAGE value="Echo loop: Bruh repeats commands and exits on 'bye'" />
+    <MESSAGE value="Add in-memory task list: add items, list them, exit on 'bye'" />
+    <MESSAGE value="Add Task class and add support for mark/unmark commands" />
+    <MESSAGE value="Add Todo, Deadline, Event task types with inheritance; support /by, /from, /to parsing" />
+    <MESSAGE value="Added BruhException file to deal with handling errors" />
+    <MESSAGE value="Added the option for users to delete tasks when they deem fit" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added the option for users to delete tasks when they deem fit" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/bruh/Bruh.java</url>
+          <line>3</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/bruh$bruh_Bruh.ic" NAME="bruh.Bruh Coverage Results" MODIFIED="1756381015867" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>bruh.*</FILTER>
+    </SUITE>
+  </component>
+</project>
