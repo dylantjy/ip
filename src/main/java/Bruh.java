@@ -4,11 +4,84 @@ public class Bruh {
 
     public static void main(String[] args) {
         Storage storage = new Storage("data/bruh.txt");
-        TaskList tasks = new TaskList(storage.load());
         Ui ui = new Ui();
+        TaskList tasks;
+        try {
+            tasks = new TaskList(storage.load());
+        } catch (Exception e) {
+            ui.showLoadingError();
+            tasks = new TaskList();
+        }
 
         ui.showWelcome();
 
+        boolean running = true;
+        while (running) {
+            try {
+                String input = ui.readCommand();
+                Parser.Parsed p = Parser.parse(input);
+
+                switch (p.type) {
+                    case BYE:
+                        ui.showBye();
+                        running = false;
+                        break;
+                    case LIST:
+                        ui.showList(tasks);
+                        break;
+                    case MARK: {
+                        int idx = Parser.parseIndex(p.args, "mark");
+                        tasks.mark(idx);
+                        ui.showMarked(tasks.get(idx));
+                        storage.save(tasks.asList());
+                        break;
+                    }
+                    case UNMARK: {
+                        int idx = Parser.parseIndex(p.args, "unmark");
+                        tasks.unmark(idx);
+                        ui.showUnmarked(tasks.get(idx));
+                        storage.save(tasks.asList());
+                        break;
+                    }
+                    case DELETE: {
+                        int idx = Parser.parseIndex(p.args, "delete");
+                        Task removed = tasks.delete(idx);
+                        ui.showRemoved(removed, tasks.size());
+                        storage.save(tasks.asList());
+                        break;
+                    }
+                    case TODO: {
+                        if (p.args.isEmpty())
+                            throw new BruhException("Todo needs a description. Example: todo borrow book");
+                        tasks.add(new Todo(p.args));
+                        ui.showAdded(tasks.get(tasks.size()), tasks.size());
+                        storage.save(tasks.asList());
+                        break;
+                    }
+                    case DEADLINE: {
+                        String[] parts = Parser.parseDeadlineArgs(p.args);
+                        tasks.add(new Deadline(parts[0], parts[1]));
+                        ui.showAdded(tasks.get(tasks.size()), tasks.size());
+                        storage.save(tasks.asList());
+                        break;
+                    }
+                    case EVENT: {
+                        String[] parts = Parser.parseEventArgs(p.args);
+                        tasks.add(new Event(parts[0], parts[1], parts[2]));
+                        ui.showAdded(tasks.get(tasks.size()), tasks.size());
+                        storage.save(tasks.asList());
+                        break;
+                    }
+                }
+            } catch (BruhException ex) {
+                ui.showError(ex.getMessage());
+            } catch (Exception io) {
+                ui.showError("Couldn't save your tasks. They'll still work for this session.");
+            }
+        }
+    }
+
+        /*
         Scanner sc = new Scanner(System.in); // keep Scanner for now (no Parser step yet)
         while (true) {
             if (!sc.hasNextLine()) {
@@ -102,6 +175,8 @@ public class Bruh {
 
         sc.close();
     }
+    */
+
 
     // ---------- helpers (unchanged) ----------
 
