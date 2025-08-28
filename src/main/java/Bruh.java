@@ -6,7 +6,7 @@ public class Bruh {
 
     public static void main(String[] args) {
         Storage storage = new Storage("data/bruh.txt");
-        ArrayList<Task> tasks = new ArrayList<>();
+        TaskList tasks = new TaskList(storage.load());
 
         System.out.println(LINE);
         System.out.println(" Hello! I'm Bruh");
@@ -27,24 +27,24 @@ public class Bruh {
                     int idx = parseIndexStrict(input, "mark"); ensureIndex(idx, tasks.size());
                     tasks.get(idx - 1).markAsDone();
                     boxed(" Nice! I've marked this task as done:\n   " + tasks.get(idx - 1));
-                    storage.save(tasks);
+                    storage.save(tasks.asList());
                 } else if (startsWithWord(input, "unmark")) {
                     int idx = parseIndexStrict(input, "unmark"); ensureIndex(idx, tasks.size());
                     tasks.get(idx - 1).markAsNotDone();
                     boxed(" OK, I've marked this task as not done yet:\n   " + tasks.get(idx - 1));
-                    storage.save(tasks);
+                    storage.save(tasks.asList());
                 } else if (startsWithWord(input, "delete")) {
                     int idx = parseIndexStrict(input, "delete"); ensureIndex(idx, tasks.size());
-                    Task removed = tasks.remove(idx - 1);
+                    Task removed = tasks.delete(idx);
                     boxed(" Noted. I've removed this task:\n   " + removed
                             + "\n Now you have " + tasks.size() + " tasks in the list.");
-                    storage.save(tasks);
+                    storage.save(tasks.asList());
                 } else if (startsWithWord(input, "todo")) {
                     String desc = afterCommand(input, "todo");
                     if (desc.isEmpty()) throw new BruhException("Todo needs a description. Try: todo borrow book");
                     tasks.add(new Todo(desc));
                     printAdded(tasks.get(tasks.size() - 1), tasks.size());
-                    storage.save(tasks);
+                    storage.save(tasks.asList());
                 } else if (startsWithWord(input, "deadline")) {
                     String rest = afterCommand(input, "deadline");
                     String[] parts = rest.split(" /by ", 2);
@@ -54,7 +54,7 @@ public class Bruh {
                     }
                     tasks.add(new Deadline(parts[0].trim(), parts[1].trim()));
                     printAdded(tasks.get(tasks.size() - 1), tasks.size());
-                    storage.save(tasks);
+                    storage.save(tasks.asList());
                 } else if (startsWithWord(input, "event")) {
                     String rest = afterCommand(input, "event");
                     if (rest.isEmpty()) throw new BruhException("Event needs a description and times. Try: event project meeting /from Mon 2pm /to 4pm");
@@ -68,7 +68,7 @@ public class Bruh {
                     }
                     tasks.add(new Event(fromSplit[0].trim(), toSplit[0].trim(), toSplit[1].trim()));
                     printAdded(tasks.get(tasks.size() - 1), tasks.size());
-                    storage.save(tasks);
+                    storage.save(tasks.asList());
                 } else if (input.isEmpty()) {
                     throw new BruhException("I got an empty line. Try: list, todo <desc>, deadline <desc> /by <when>, event <desc> /from <start> /to <end>");
                 } else {
@@ -111,17 +111,17 @@ public class Bruh {
         }
     }
 
-    private static void printList(ArrayList<Task> tasks) {
-        System.out.println(LINE);
-        if (tasks.isEmpty()) {
-            System.out.println(" Your list is empty. Add something with 'todo', 'deadline', or 'event'.");
+    private static void printList(TaskList tasks) {
+        System.out.println("____________________________________________________________");
+        if (tasks.size() == 0) {
+            System.out.println("Your list is empty.");
         } else {
-            System.out.println(" Here are the tasks in your list:");
-            for (int i = 0; i < tasks.size(); i++) {
-                System.out.println(" " + (i + 1) + ". " + tasks.get(i));
+            System.out.println("Here are the tasks in your list:");
+            for (int i = 1; i <= tasks.size(); i++) {
+                System.out.println(i + "." + tasks.get(i));
             }
         }
-        System.out.println(LINE);
+        System.out.println("____________________________________________________________");
     }
 
     private static void printAdded(Task t, int total) {
