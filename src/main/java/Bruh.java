@@ -5,6 +5,7 @@ public class Bruh {
     private static final String LINE = "____________________________________________________________";
 
     public static void main(String[] args) {
+        Storage storage = new Storage("data/bruh.txt");
         ArrayList<Task> tasks = new ArrayList<>();
 
         System.out.println(LINE);
@@ -14,13 +15,8 @@ public class Bruh {
 
         Scanner sc = new Scanner(System.in);
         while (true) {
-            if (!sc.hasNextLine()) {
-                goodbye();
-                break;
-            }
-            String raw = sc.nextLine();
-            String input = raw.trim();
-
+            if (!sc.hasNextLine()) { goodbye(); break; }
+            String input = sc.nextLine().trim();
             try {
                 if (input.equalsIgnoreCase("bye")) {
                     goodbye();
@@ -28,28 +24,28 @@ public class Bruh {
                 } else if (input.equalsIgnoreCase("list")) {
                     printList(tasks);
                 } else if (startsWithWord(input, "mark")) {
-                    int idx = parseIndexStrict(input, "mark");
-                    ensureIndex(idx, tasks.size());
+                    int idx = parseIndexStrict(input, "mark"); ensureIndex(idx, tasks.size());
                     tasks.get(idx - 1).markAsDone();
                     boxed(" Nice! I've marked this task as done:\n   " + tasks.get(idx - 1));
+                    storage.save(tasks);
                 } else if (startsWithWord(input, "unmark")) {
-                    int idx = parseIndexStrict(input, "unmark");
-                    ensureIndex(idx, tasks.size());
+                    int idx = parseIndexStrict(input, "unmark"); ensureIndex(idx, tasks.size());
                     tasks.get(idx - 1).markAsNotDone();
                     boxed(" OK, I've marked this task as not done yet:\n   " + tasks.get(idx - 1));
+                    storage.save(tasks);
                 } else if (startsWithWord(input, "delete")) {
-                    int idx = parseIndexStrict(input, "delete");
-                    ensureIndex(idx, tasks.size());
+                    int idx = parseIndexStrict(input, "delete"); ensureIndex(idx, tasks.size());
                     Task removed = tasks.remove(idx - 1);
                     boxed(" Noted. I've removed this task:\n   " + removed
                             + "\n Now you have " + tasks.size() + " tasks in the list.");
+                    storage.save(tasks);
                 } else if (startsWithWord(input, "todo")) {
                     String desc = afterCommand(input, "todo");
                     if (desc.isEmpty()) throw new BruhException("Todo needs a description. Try: todo borrow book");
                     tasks.add(new Todo(desc));
                     printAdded(tasks.get(tasks.size() - 1), tasks.size());
+                    storage.save(tasks);
                 } else if (startsWithWord(input, "deadline")) {
-                    // deadline <desc> /by <when>
                     String rest = afterCommand(input, "deadline");
                     String[] parts = rest.split(" /by ", 2);
                     if (rest.isEmpty()) throw new BruhException("Deadline needs a description and '/by'. Try: deadline return book /by Sunday");
@@ -58,8 +54,8 @@ public class Bruh {
                     }
                     tasks.add(new Deadline(parts[0].trim(), parts[1].trim()));
                     printAdded(tasks.get(tasks.size() - 1), tasks.size());
+                    storage.save(tasks);
                 } else if (startsWithWord(input, "event")) {
-                    // event <desc> /from <start> /to <end>
                     String rest = afterCommand(input, "event");
                     if (rest.isEmpty()) throw new BruhException("Event needs a description and times. Try: event project meeting /from Mon 2pm /to 4pm");
                     String[] fromSplit = rest.split(" /from ", 2);
@@ -72,14 +68,17 @@ public class Bruh {
                     }
                     tasks.add(new Event(fromSplit[0].trim(), toSplit[0].trim(), toSplit[1].trim()));
                     printAdded(tasks.get(tasks.size() - 1), tasks.size());
+                    storage.save(tasks);
                 } else if (input.isEmpty()) {
                     throw new BruhException("I got an empty line. Try: list, todo <desc>, deadline <desc> /by <when>, event <desc> /from <start> /to <end>");
                 } else {
-                    // Unknown command
                     throw new BruhException("Hmm, I don't recognize that. Try: list, todo, deadline, event, mark N, unmark N, delete N, or bye");
                 }
             } catch (BruhException ex) {
                 boxed(" " + ex.getMessage());
+            } catch (Exception io) {
+                // Save failures shouldn't crash the UI
+                boxed(" Oops, I couldn't save your tasks. They'll still work for this session.");
             }
         }
         sc.close();
