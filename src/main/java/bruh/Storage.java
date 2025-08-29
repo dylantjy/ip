@@ -8,15 +8,39 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Handles persistence of tasks to and from a flat file.
+ * <p>
+ * Uses a simple line-based format:
+ * <ul>
+ *   <li>{@code T | 0/1 | description}</li>
+ *   <li>{@code D | 0/1 | description | yyyy-MM-dd or raw}</li>
+ *   <li>{@code E | 0/1 | description | from | to}</li>
+ * </ul>
+ * Lines that are malformed or cannot be parsed are skipped gracefully.
+ */
 public class Storage {
     private final Path file;
     private final Path dir;
 
+    /**
+     * Creates a {@code Storage} that reads/writes to the given relative path.
+     *
+     * @param relativePath path to the data file (e.g., {@code data/bruh.txt})
+     */
     public Storage(String relativePath) {
         this.file = Paths.get(relativePath).normalize();
         this.dir = file.getParent() == null ? Paths.get(".") : file.getParent().normalize();
     }
 
+    /**
+     * Loads tasks from disk.
+     * <p>
+     * If the directory/file does not exist, returns an empty list.
+     * Malformed lines are ignored.
+     *
+     * @return a mutable list of tasks loaded from the file (possibly empty)
+     */
     public ArrayList<Task> load() {
         ArrayList<Task> tasks = new ArrayList<>();
         try {
@@ -40,6 +64,12 @@ public class Storage {
         return tasks;
     }
 
+    /**
+     * Saves the given tasks to disk, creating parent directories if needed.
+     *
+     * @param tasks the tasks to persist
+     * @throws IOException if writing to the file fails
+     */
     public void save(List<Task> tasks) throws IOException {
         if (!Files.exists(dir)) {
             Files.createDirectories(dir);
@@ -53,6 +83,13 @@ public class Storage {
 
     // --- helpers ---
 
+    /**
+     * Parses a single storage line into a {@link Task}.
+     * Lines that cannot be parsed return {@code null}.
+     *
+     * @param line one line from the storage file
+     * @return the parsed task, or {@code null} if the line is invalid
+     */
     private static Task parseLine(String line) {
         // Split on " | " with flexible spacing around |
         String[] parts = line.split("\\s*\\|\\s*");
@@ -64,7 +101,7 @@ public class Storage {
         boolean isDone = "1".equals(doneFlag);
 
         try {
-            switch (type) {
+                switch (type) {
                 case "T": {
                     Task t = new Todo(desc);
                     if (isDone) t.markAsDone();
@@ -94,6 +131,13 @@ public class Storage {
         }
     }
 
+    /**
+     * Serializes a {@link Task} to a single storage line using the format
+     * documented in the class header.
+     *
+     * @param t the task to serialize
+     * @return the line to write to storage
+     */
     private static String serialize(Task t) {
         if (t instanceof Todo) {
             return "T | " + (t.isDone() ? "1" : "0") + " | " + t.getDescription();
@@ -111,3 +155,4 @@ public class Storage {
         }
     }
 }
+
