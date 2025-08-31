@@ -23,3 +23,12 @@ tasks.run {
     workingDir = projectDir
     standardInput = System.in
 }
+
+jar {
+    manifest {
+        attributes(
+            'Main-Class': application.mainClass
+        )
+    }
+}
+
