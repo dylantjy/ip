@@ -1,0 +1,11 @@
+.gradle/
+build/
+out/
+daemon/
+**/caches/
+*.;ock
+*.lock
+*.class
+.idea/
+*.iml
+.DS_Store
