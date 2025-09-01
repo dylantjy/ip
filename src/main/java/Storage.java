@@ -97,12 +97,14 @@ public class Storage {
             return "T | " + (t.isDone() ? "1" : "0") + " | " + t.getDescription();
         } else if (t instanceof Deadline) {
             Deadline d = (Deadline) t;
-            return "D | " + (t.isDone() ? "1" : "0") + " | " + d.getDescription() + " | " + d.getBy();
+            String by = (d.getByDate() != null) ? DateUtil.toIso(d.getByDate()) : d.getBy();
+            return "D | " + (t.isDone() ? "1" : "0") + " | " + d.getDescription() + " | " + by;
         } else if (t instanceof Event) {
             Event e = (Event) t;
-            return "E | " + (t.isDone() ? "1" : "0") + " | " + e.getDescription() + " | " + e.getFrom() + " | " + e.getTo();
+            String from = (e.getFromDate() != null) ? DateUtil.toIso(e.getFromDate()) : e.getFrom();
+            String to   = (e.getToDate()   != null) ? DateUtil.toIso(e.getToDate())   : e.getTo();
+            return "E | " + (t.isDone() ? "1" : "0") + " | " + e.getDescription() + " | " + from + " | " + to;
         } else {
-            // Fallback
             return "T | " + (t.isDone() ? "1" : "0") + " | " + t.getDescription();
         }
     }
