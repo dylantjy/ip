@@ -1,0 +1,20 @@
+.bubble {
+    -fx-padding: 8 12 8 12;
+    -fx-background-radius: 14;
+    -fx-background-color: #ECECEC;
+    -fx-font-size: 13px;
+}
+
+.bubble.bruh {
+    -fx-background-color: #ECECEC; /* left */
+}
+
+.bubble.user {
+    -fx-background-color: #CFE9FF; /* right */
+}
+
+.list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 2 0 2 0;
+}
+
