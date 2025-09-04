@@ -1,10 +1,24 @@
 plugins {
     id 'java'
     id 'application'
+    id 'checkstyle'
 }
 
 repositories {
     mavenCentral()
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17) // or 21 if you’re there
+    }
+    withJavadocJar()
+    withSourcesJar()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 17 // keep in sync with toolchain
 }
 
 dependencies {
@@ -13,22 +27,47 @@ dependencies {
 
 application {
     mainClass = 'bruh.Bruh'
+    applicationDefaultJvmArgs = [
+        // e.g. '-Dfile.encoding=UTF-8'
+    ]
 }
 
 tasks.test {
     useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat "full"
+        showStandardStreams = false
+    }
 }
 
 tasks.run {
     workingDir = projectDir
     standardInput = System.in
+    // run with: gradle run --args="foo bar"
 }
 
 jar {
     manifest {
         attributes(
-            'Main-Class': application.mainClass
+            'Main-Class': application.mainClass.get()
         )
+    }
+    // duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+checkstyle {
+    // Pin tool version & config
+    toolVersion = '11.0.0'
+    config = resources.text.fromFile("$rootDir/config/checkstyle/checkstyle.xml")
+    // Uncomment to fail build on first violation:
+    // isIgnoreFailures = false
+}
+
+tasks.withType(Checkstyle).configureEach {
+    reports {
+        xml.required = false
+        html.required = true
     }
 }
 
