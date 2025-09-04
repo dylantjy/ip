@@ -85,14 +85,16 @@ public class GuiLogic {
                     if (p.args.isEmpty()) {
                         throw new BruhException("Find needs a keyword. Example: find book");
                     }
-                    List<Task> matches = tasks.find(p.args);
+                    String[] kws = p.args.trim().split("\\s+");   // split by whitespace
+                    List<Task> matches = tasks.findAny(kws);
+
                     if (matches.isEmpty()) {
                         return "No matching tasks found.";
-                    }
+                    } 
                     StringBuilder sb = new StringBuilder("Here are the matching tasks in your list:\n");
                     int i = 1;
                     for (Task t : matches) {
-                        sb.append(" ").append(i++).append(". ").append(t).append("\n");
+                         sb.append(" ").append(i++).append(". ").append(t).append("\n");
                     }
                     return sb.toString().trim();
                 }

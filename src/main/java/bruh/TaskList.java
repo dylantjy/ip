@@ -12,7 +12,10 @@ public class TaskList {
     public int size() { return tasks.size(); }
     public Task get(int idx1Based) { return tasks.get(idx1Based - 1); }
 
-    public void add(Task t) { tasks.add(t); }
+    public void add(Task... ts){
+       for (Task t : ts) tasks.add(t);
+    }
+
     public Task delete(int idx1Based) { return tasks.remove(idx1Based - 1); }
 
     public void mark(int idx1Based) { get(idx1Based).markAsDone(); }
@@ -30,4 +33,20 @@ public class TaskList {
         return matches;
     }
 
+    public List<Task> findAny(String... keywords) {
+        List<Task> matches = new ArrayList<>();
+        if (keywords == null || keywords.length == 0) return matches;
+
+        outer:
+        for (Task task : tasks) {
+           String d = task.getDescription();
+              for (String kw : keywords) {
+                  if (kw != null && !kw.isBlank() && d.contains(kw)) {
+                     matches.add(task);
+                     continue outer;
+            }
+        }
+    }
+    return matches;
+    }
 }

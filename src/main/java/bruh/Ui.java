@@ -23,13 +23,21 @@ public class Ui {
     public void showBye() { showBoxed(" Bye bruh. Hope to see you again soon!"); }
 
     public void showAdded(Task t, int total) {
-        showBoxed(" Got it. I've added this task:\n   " + t
-                + "\n Now you have " + total + " tasks in the list.");
-    }
+        showBoxed(
+           "Got it. I've added this task:",
+           "  " + t,
+           "Now you have " + total + " tasks in the list."
+        );
+    } 
+
     public void showRemoved(Task t, int remaining) {
-        showBoxed(" Noted. I've removed this task:\n   " + t
-                + "\n Now you have " + remaining + " tasks in the list.");
+        showBoxed(
+           "Noted. I've removed this task:",
+           "  " + t,
+           "Now you have " + remaining + " tasks in the list."
+        );
     }
+
     public void showMarked(Task t) {
         showBoxed(" Nice! I've marked this task as done:\n   " + t);
     }
@@ -50,8 +58,14 @@ public class Ui {
     }
 
     public void showLoadingError() { showError("Couldn't load previous tasks; starting with an empty list."); }
-
-    private void showBoxed(String msg) { showLine(); System.out.println(msg); showLine(); }
+        
+    public void showBoxed(String... lines) {
+          showLine();
+          for (String s : lines) {
+               System.out.println(" " + s);
+          }
+          showLine();
+    }
 
     public void showFound(List<Task> matches) {
         if (matches.isEmpty()) {
