@@ -12,18 +12,28 @@ public final class DateUtil {
 
     // Try parse yyyy-MM-dd; return null if not parseable
     public static LocalDate tryParseIso(String s) {
+        assert s != null : "Date string must not be null";   // <--- added
         try {
-            return LocalDate.parse(s.trim(), ISO);
+            LocalDate parsed = LocalDate.parse(s.trim(), ISO);
+            assert parsed != null : "Parsed date must not be null";   // <--- added
+            return parsed;
         } catch (DateTimeParseException e) {
             return null;
         }
     }
 
     public static String toIso(LocalDate d) {
-        return d.format(ISO);
+        assert d != null : "LocalDate must not be null";   // <--- added
+        String formatted = d.format(ISO);
+        assert formatted.matches("\\d{4}-\\d{2}-\\d{2}") : "toIso must return yyyy-MM-dd"; // optional check
+        return formatted;
     }
 
     public static String toPretty(LocalDate d) {
-        return d.format(PRETTY);
+        assert d != null : "LocalDate must not be null";   // <--- added
+        String formatted = d.format(PRETTY);
+        assert formatted != null && !formatted.isBlank() : "toPretty must not return blank";
+        return formatted;
     }
 }
+
