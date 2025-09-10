@@ -2,6 +2,7 @@ package bruh;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
 
 public class TaskList {
     private final ArrayList<Task> tasks;
@@ -57,7 +58,7 @@ public class TaskList {
 
     public List<Task> asList() { 
         assert tasks != null : "tasks list must not be null";
-        return tasks; 
+        return Collections.unmodifiableList(tasks); 
     }
 
     public List<Task> find(String keyword) {
@@ -71,31 +72,26 @@ public class TaskList {
         }
         return matches;
     }
-
+    
     public List<Task> findAny(String... keywords) {
         assert keywords != null && keywords.length > 0 : "at least one keyword";
         List<Task> matches = new ArrayList<>();
-
-        outer:
         for (Task task : tasks) {
             assert task != null : "task must not be null";
-            String d = task.getDescription();
-            for (String kw : keywords) {
-                assert kw != null && !kw.isBlank() : "keyword must be non-empty";
-                if (d.contains(kw)) {
-                    matches.add(task);
-                    continue outer;
-                }
+            if (matchesAny(task, keywords)) {
+                matches.add(task);
             }
-        }
+        }  
         return matches;
-    }
+     } 
 
-    // already had this variant — kept with minor tweaks
-    public void add(Task t) {
-        assert t != null : "task must not be null";
-        tasks.add(t);
-        assert tasks.get(tasks.size() - 1) == t : "task appended at end";
-    }
+     private static boolean matchesAny(Task task, String... keywords) {
+         String d = task.getDescription();
+         for (String kw : keywords) {
+             if (kw != null && !kw.isBlank() && d.contains(kw)) return true;
+         }
+         return false;
+     }
+
 }
 
