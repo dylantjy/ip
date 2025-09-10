@@ -1,0 +1,10 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+
+// give your project a name (optional but nice)
+rootProject.name = "bruh"
+
