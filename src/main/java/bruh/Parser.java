@@ -26,15 +26,37 @@ public class Parser {
             case "deadline": return new Parsed(CommandType.DEADLINE, args);
             case "event":    return new Parsed(CommandType.EVENT, args);
             case "find": return new Parsed(CommandType.FIND, afterCommand(input, "find"));
+            case "snooze": return new Parsed(CommandType.SNOOZE, args);
+            case "unsnooze": return new Parsed(CommandType.UNSNOOZE, args);
+            case "resched": return new Parsed(CommandType.RESCHED, args);
             default: throw new BruhException(
                     "Unknown command. Try: list, todo, deadline, event, mark N, unmark N, delete N, or bye");
         }
     }
 
-    public static int parseIndex(String args, String verb) throws BruhException {
-        if (args.isEmpty()) throw new BruhException("Please provide a task number. Example: " + verb + " 2");
-        try { return Integer.parseInt(args); }
-        catch (NumberFormatException e) { throw new BruhException("That doesn't look like a number. Try: " + verb + " 2"); }
+  
+   public static int parseIndex(String args, String verb) throws BruhException {
+    if (args == null || args.isBlank())
+        throw new BruhException("Please provide a task number. Example: " + verb + " 2");
+    String first = args.trim().split("\\s+")[0];  // ← only take first token
+    try {
+        int idx = Integer.parseInt(first);
+        if (idx <= 0) throw new NumberFormatException();
+        return idx;
+    } catch (NumberFormatException e) {
+        throw new BruhException("That doesn't look like a number. Try: " + verb + " 2");
+    }
+   }
+
+    public static int parseIndex(String[] tokens, String verb) throws BruhException {
+        if (tokens.length == 0) {
+           throw new BruhException("Please provide a task number. Example: " + verb + " 2");
+           }
+        try {
+           return Integer.parseInt(tokens[0]);
+        } catch (NumberFormatException e) {
+           throw new BruhException("That doesn't look like a number. Try: " + verb + " 2");
+        }  
     }
 
     public static String[] parseDeadlineArgs(String args) throws BruhException {
@@ -54,7 +76,7 @@ public class Parser {
         return new String[]{ f[0].trim(), t[0].trim(), t[1].trim() };
     }
 
-    public enum CommandType { BYE, LIST, MARK, UNMARK, DELETE, TODO, DEADLINE, EVENT, FIND }
+    public enum CommandType { BYE, LIST, MARK, UNMARK, DELETE, TODO, DEADLINE, EVENT, FIND, SNOOZE, UNSNOOZE, RESCHED}
 
     private static String afterCommand(String input, String cmd) {
         if (input.equalsIgnoreCase(cmd)) return "";

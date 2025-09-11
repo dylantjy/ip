@@ -1,5 +1,9 @@
 package bruh;
+
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 
 public class Deadline extends Task {
     protected String by;            // keep original text for back-compat
@@ -18,13 +22,33 @@ public class Deadline extends Task {
         this.by = (byDate == null) ? "" : DateUtil.toIso(byDate);
     }
 
-    public String getBy() { return (byDate != null) ? DateUtil.toIso(byDate) : by; }
+    // Getter that always returns ISO (yyyy-MM-dd)
+    public String getBy() {
+       return (byDate != null) ? byDate.toString() : by;
+    }
+
     public LocalDate getByDate() { return byDate; }
+
+    public String getByText() { return by; } // keep if other code uses it
+
+    public void setByText(String newBy) {
+        this.by = newBy;
+        // keep byDate in sync if parseable
+        LocalDate parsed = DateParsing.tryParseToDate(newBy);
+        if (parsed != null) this.byDate = parsed;
+    }
+
+    public void setByDate(LocalDate newByDate) {
+       this.byDate = newByDate;
+       this.by = (newByDate == null) ? this.by : newByDate.toString(); // ISO text
+    }
 
     @Override
     public String toString() {
-        String when = (byDate != null) ? DateUtil.toPretty(byDate) : by;
-        return "[D]" + super.toString() + " (by: " + when + ")";
+       String when = (byDate != null)
+           ? byDate.format(java.time.format.DateTimeFormatter.ofPattern("MMM d yyyy", java.util.Locale.ENGLISH))
+           : by;
+       return "[D][" + getStatusIcon() + "] " + description + " (by: " + when + ")";
     }
 }
 

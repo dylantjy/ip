@@ -1,6 +1,8 @@
 package bruh;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /** Adapts the existing Bruh logic for a GUI: input -> response string. */
@@ -90,14 +92,67 @@ public class GuiLogic {
 
                     if (matches.isEmpty()) {
                         return "No matching tasks found.";
-                    } 
+                    }
                     StringBuilder sb = new StringBuilder("Here are the matching tasks in your list:\n");
                     int i = 1;
                     for (Task t : matches) {
-                         sb.append(" ").append(i++).append(". ").append(t).append("\n");
+                        sb.append(" ").append(i++).append(". ").append(t).append("\n");
                     }
                     return sb.toString().trim();
                 }
+
+                // --- NEW: Snooze / Unsnooze ---------------------------------
+                case SNOOZE: {
+                    // Expect: "<index> <+3d2h30m | 2025-09-20T09:00 | 2025-09-20 09:00 | 2025-09-20>"
+                    String[] aa = p.args.trim().split("\\s+", 2);
+                    if (aa.length < 2) {
+                        throw new BruhException("Usage: snooze <index> <+3d2h30m | 2025-09-20T09:00 | 2025-09-20 09:00 | 2025-09-20>");
+                    }
+                    int snoozeIdx = Parser.parseIndex(aa[0], "snooze");  // reuse your helper
+                    String when = aa[1].trim();
+                    if (when.startsWith("+")) {
+                        Duration d = TimeParsing.parseRelative(when);
+                        tasks.snoozeFor(snoozeIdx, TimeParsing.parseRelative(when));
+                    } else {
+                        LocalDateTime dt = TimeParsing.parseDateTime(when);
+                        tasks.snoozeUntil(snoozeIdx, TimeParsing.parseDateTime(when));
+                    }
+                    save();
+                    return "Snoozed this task until:\n" + "  " + tasks.get(snoozeIdx);
+                }
+                case UNSNOOZE: {
+                    int unsnoozeIdx = Parser.parseIndex(p.args, "unsnooze");
+                    tasks.unsnooze(unsnoozeIdx);
+                    save();
+                    return "Unsnoozed this task:\n" + "  " + tasks.get(unsnoozeIdx);
+                }
+                case RESCHED: {
+                // Usage: resched <index> <+Nd | YYYY-MM-DD | YYYY-MM-DDTHH:MM | YYYY-MM-DD HH:MM>
+                if (p.args.isEmpty()) {
+                    throw new BruhException("Usage: resched <index> <+Nd | YYYY-MM-DD | YYYY-MM-DDTHH:MM>");
+                }
+                String[] aa = p.args.trim().split("\\s+", 2);
+                if (aa.length < 2) {
+                    throw new BruhException("Usage: resched <index> <+Nd | YYYY-MM-DD | YYYY-MM-DDTHH:MM>");
+                }
+                int idx = Parser.parseIndex(aa[0], "resched");
+                String when = aa[1].trim();
+
+                if (when.startsWith("+")) {
+                    // relative days: +2d, +10d
+                    int days = parsePlusDays(when); // helper just below
+                    tasks.shiftDeadlineByDays(idx, days);
+                } else {
+                    // absolute: keep as text (normalize to ISO date if you want)
+                    // Normalize to yyyy-MM-dd if a datetime was given
+                    java.time.LocalDate d = DateParsing.tryParseToDate(when);
+                    if (d == null) throw new BruhException("Unrecognized date format: " + when);
+                    tasks.rescheduleDeadlineAbsolute(idx, d.toString());
+                }
+                save();
+                return "Rescheduled this deadline:\n" + "  " + tasks.get(idx);
+                }
+                // ----------------------------------------------------------------
                 default:
                     return "Unknown command.";
             }
@@ -111,5 +166,22 @@ public class GuiLogic {
     private void save() throws IOException {
         storage.save(tasks.asList());
     }
+
+    private static int parsePlusDays(String s) throws BruhException {
+    // Accept only +Nd (days) for simplicity
+    String t = s.trim().toLowerCase();
+    if (!t.startsWith("+") || !t.endsWith("d")) {
+        throw new BruhException("Use +Nd for relative days (e.g., +2d).");
+    }
+    String num = t.substring(1, t.length() - 1);
+    try {
+        int days = Integer.parseInt(num);
+        if (days == 0) throw new NumberFormatException();
+        return days;
+    } catch (NumberFormatException e) {
+        throw new BruhException("Bad relative days: " + s + " (try +2d)");
+    }
+}
+
 }
 

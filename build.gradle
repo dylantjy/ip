@@ -11,7 +11,7 @@ repositories {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17) // or 21 if you’re there
+        languageVersion = JavaLanguageVersion.of(17)
     }
     withJavadocJar()
     withSourcesJar()
@@ -19,19 +19,35 @@ java {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
-    options.release = 17 // keep in sync with toolchain
+    options.release = 17
 }
 
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
 }
 
+/* ---- JavaFX: pull only your current platform classifier ---- */
+def fxVersion = '22.0.2' // works fine on JDK 17+
+def os = org.gradle.internal.os.OperatingSystem.current()
+def arch = System.getProperty('os.arch').toLowerCase()
+def platform =
+        os.isMacOsX()   ? (arch.contains('aarch64') || arch.contains('arm') ? 'mac-aarch64' : 'mac') :
+        os.isLinux()    ? 'linux' :
+        /* windows */     'win'
+
+dependencies {
+    implementation "org.openjfx:javafx-base:${fxVersion}:${platform}"
+    implementation "org.openjfx:javafx-graphics:${fxVersion}:${platform}"
+    implementation "org.openjfx:javafx-controls:${fxVersion}:${platform}"
+    implementation "org.openjfx:javafx-fxml:${fxVersion}:${platform}"
+}
+
 application {
-    mainClass = 'bruh.Bruh'
+    // pick ONE main; you had two. Adjust to your actual entry point:
+    mainClass = 'bruh.Launcher'
     applicationDefaultJvmArgs = [
-        // e.g. '-Dfile.encoding=UTF-8'
+        '-Dfile.encoding=UTF-8'
     ]
-    mainClass.set("bruh.Launcher")
 }
 
 tasks.test {
@@ -46,55 +62,38 @@ tasks.test {
 tasks.run {
     workingDir = projectDir
     standardInput = System.in
-    // run with: gradle run --args="foo bar"
+    // run with: ./gradlew run --args="foo bar"
 }
 
-jar {
+/* ---- JARs & Shadow configuration ----
+ * Make the fat jar be build/libs/bruh.jar and disable the thin jar.
+ */
+shadowJar {
+    archiveFileName = 'bruh.jar'      // no '-all' classifier
     manifest {
-        attributes(
-            'Main-Class': application.mainClass.get()
-        )
+        attributes('Main-Class': application.mainClass.get())
     }
-    // duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+jar {
+    enabled = false
 }
 
-shadowJar{
-    archiveFileName = 'bruh.jar'
-}
+/* ---- Gradle 9 implicit dependency fixes ----
+ * distZip, distTar, startScripts must depend on shadowJar.
+ */
+tasks.named('distZip')      { dependsOn tasks.named('shadowJar') }
+tasks.named('distTar')      { dependsOn tasks.named('shadowJar') }
+tasks.named('startScripts') { dependsOn tasks.named('shadowJar') }
 
+/* ---- Checkstyle ---- */
 checkstyle {
-    // Pin tool version & config
     toolVersion = '11.0.0'
     config = resources.text.fromFile("$rootDir/config/checkstyle/checkstyle.xml")
-    // Uncomment to fail build on first violation:
-    // isIgnoreFailures = false
 }
-
 tasks.withType(Checkstyle).configureEach {
     reports {
         xml.required = false
         html.required = true
     }
-}
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    String javaFxVersion = '17.0.7'
-
-    implementation group: 'org.openjfx', name: 'javafx-base', version: javaFxVersion, classifier: 'win'
-    implementation group: 'org.openjfx', name: 'javafx-base', version: javaFxVersion, classifier: 'mac'
-    implementation group: 'org.openjfx', name: 'javafx-base', version: javaFxVersion, classifier: 'linux'
-    implementation group: 'org.openjfx', name: 'javafx-controls', version: javaFxVersion, classifier: 'win'
-    implementation group: 'org.openjfx', name: 'javafx-controls', version: javaFxVersion, classifier: 'mac'
-    implementation group: 'org.openjfx', name: 'javafx-controls', version: javaFxVersion, classifier: 'linux'
-    implementation group: 'org.openjfx', name: 'javafx-fxml', version: javaFxVersion, classifier: 'win'
-    implementation group: 'org.openjfx', name: 'javafx-fxml', version: javaFxVersion, classifier: 'mac'
-    implementation group: 'org.openjfx', name: 'javafx-fxml', version: javaFxVersion, classifier: 'linux'
-    implementation group: 'org.openjfx', name: 'javafx-graphics', version: javaFxVersion, classifier: 'win'
-    implementation group: 'org.openjfx', name: 'javafx-graphics', version: javaFxVersion, classifier: 'mac'
-    implementation group: 'org.openjfx', name: 'javafx-graphics', version: javaFxVersion, classifier: 'linux'
 }
 
