@@ -98,125 +98,63 @@ public class TaskList {
          return false;
      }
 
-// === RESCHED support (paste inside TaskList class) ==========================
-
-/** 1-based index guard (GUI passes 1,2,3...). */
+/** 1-based index guard */
 private Task at(int idx1Based) {
     assert idx1Based > 0 && idx1Based <= tasks.size() : "index out of range";
     return tasks.get(idx1Based - 1);
 }
 
-/** Try multiple date formats; return null if unparsable. */
-private static LocalDateTime parseFlexibleToLdt(String s) {
-    if (s == null) return null;
-    String n = s.trim().replace(' ', 'T'); // allow "YYYY-MM-DD HH:MM"
-    try { return LocalDateTime.parse(n); } catch (DateTimeParseException ignored) {}
-    try { return LocalDate.parse(n).atStartOfDay(); } catch (DateTimeParseException ignored) {}
+/** Detect done-status from the display (e.g., "[D][X] ..."). */
+private static boolean isDone(Task t) {
+    return t.toString().contains("[X]");
+}
 
-    // common non-ISO date patterns (IP/Duke often uses d/M/yyyy)
-    String[] pats = {"d/M/yyyy", "dd/M/yyyy", "d/MM/yyyy", "dd/MM/yyyy", "d-M-yyyy", "dd-MM-yyyy"};
-    for (String p : pats) {
-        try {
-            return LocalDate.parse(s.trim(), DateTimeFormatter.ofPattern(p)).atStartOfDay();
-        } catch (DateTimeParseException ignored) {}
+/** Extract the "(by: ...)" text from a Deadline's toString. */
+private static String extractByText(Task t) {
+    String s = t.toString();
+    int i = s.indexOf("(by:");
+    if (i < 0) return null;
+    int j = s.indexOf(')', i);
+    if (j < 0) return null;
+    return s.substring(i + 4, j).trim(); // after "(by:" up to ')'
+}
+
+/** Replace the Deadline at idx with a new date (ISO yyyy-MM-dd), preserving done-status. */
+private void replaceDeadline(int idx1Based, String isoDate) {
+    Task old = at(idx1Based);
+    if (!(old instanceof Deadline)) {
+        throw new IllegalArgumentException("Selected task has no deadline to reschedule.");
     }
-    return null;
-}
-
-/** Format as date-only if midnight; otherwise full ISO datetime. */
-private static String formatPreferDate(LocalDateTime dt) {
-    boolean isMidnight = dt.getHour() == 0 && dt.getMinute() == 0
-            && dt.getSecond() == 0 && dt.getNano() == 0;
-    return isMidnight ? dt.toLocalDate().toString() : dt.toString();
-}
-
-/** Locate likely deadline field name. */
-private static Field findDeadlineField(Class<?> cls) {
-    String[] names = {"by", "deadline", "due"};
-    while (cls != null) {
-        for (String n : names) {
-            try {
-                Field f = cls.getDeclaredField(n);
-                f.setAccessible(true);
-                return f;
-            } catch (NoSuchFieldException ignored) { }
-        }
-        cls = cls.getSuperclass();
+    String desc = old.getDescription();
+    Deadline newer = new Deadline(desc, isoDate);
+    if (isDone(old)) {
+        newer.markAsDone();
     }
-    return null;
+    tasks.set(idx1Based - 1, newer);
 }
 
-/** Read current deadline as LocalDateTime from a Deadline-like field. */
-private static LocalDateTime readDeadlineAsLdt(Object obj, Field f) {
-    try {
-        Object v = f.get(obj);
-        if (v == null) return null;
-        if (v instanceof LocalDateTime) return (LocalDateTime) v;
-        if (v instanceof LocalDate) return ((LocalDate) v).atStartOfDay();
-        if (v instanceof String) return parseFlexibleToLdt((String) v);
-    } catch (IllegalAccessException ignored) { }
-    return null;
-}
-
-/** Attempt to write the deadline field; return true on success. */
-private static boolean writeDeadline(Object obj, Field f, LocalDateTime newBy, String originalText) {
-    try {
-        Class<?> type = f.getType();
-        if (type.equals(LocalDateTime.class)) {
-            f.set(obj, newBy);
-            return true;
-        } else if (type.equals(LocalDate.class)) {
-            f.set(obj, newBy.toLocalDate());
-            return true;
-        } else if (type.equals(String.class)) {
-            // If caller passed an exact text (from user), prefer that; else format neatly.
-            String s = (originalText != null && !originalText.isBlank())
-                    ? originalText.trim()
-                    : formatPreferDate(newBy);
-            f.set(obj, s);
-            return true;
-        }
-    } catch (IllegalAccessException ignored) { }
-    return false;
-}
-
-/** Shift a Deadline task’s date by N days (can be negative). */
+/** Shift a Deadline’s date by N days (can be negative). */
 public void shiftDeadlineByDays(int idx1Based, int days) {
     Task t = at(idx1Based);
     if (!(t instanceof Deadline)) {
         throw new IllegalArgumentException("Selected task has no deadline to shift.");
     }
-    Field f = findDeadlineField(t.getClass());
-    if (f == null) throw new IllegalStateException("Can't find deadline field (by/deadline/due).");
-
-    LocalDateTime cur = readDeadlineAsLdt(t, f);
-    if (cur == null) throw new IllegalStateException("Existing deadline is not a recognizable date.");
-
-    LocalDateTime newer = cur.plusDays(days);
-    if (!writeDeadline(t, f, newer, null)) {
-        // Fallback: replace with a new Deadline(desc, dateText)
-        String desc = t.getDescription();
-        tasks.set(idx1Based - 1, new Deadline(desc, formatPreferDate(newer)));
+    String byText = extractByText(t);
+    if (byText == null) {
+        throw new IllegalStateException("Cannot find current deadline to shift.");
     }
+    java.time.LocalDate base = DateParsing.tryParseToDate(byText);
+    if (base == null) {
+        throw new IllegalStateException("Unrecognized current deadline: " + byText);
+    }
+    java.time.LocalDate newer = base.plusDays(days);
+    replaceDeadline(idx1Based, newer.toString()); // ISO string
 }
 
-/** Set a Deadline task’s date to an absolute date/time (text comes from GUI). */
-public void rescheduleDeadlineAbsolute(int idx1Based, String when) {
-    Task t = at(idx1Based);
-    if (!(t instanceof Deadline)) {
-        throw new IllegalArgumentException("Selected task has no deadline to reschedule.");
-    }
-    LocalDateTime newBy = parseFlexibleToLdt(when);
-    if (newBy == null) throw new IllegalArgumentException("Unrecognized date format: " + when);
-
-    Field f = findDeadlineField(t.getClass());
-    if (f == null || !writeDeadline(t, f, newBy, when)) {
-        // Fallback: replace with a new Deadline(desc, dateText)
-        String desc = t.getDescription();
-        tasks.set(idx1Based - 1, new Deadline(desc, formatPreferDate(newBy)));
-    }
+/** Set a Deadline’s date to an absolute date (ISO string already from GuiLogic). */
+public void rescheduleDeadlineAbsolute(int idx1Based, String whenIsoDate) {
+    replaceDeadline(idx1Based, whenIsoDate);
 }
-// === end RESCHED support =====================================================
 
 	
 }
