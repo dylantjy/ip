@@ -101,31 +101,6 @@ public class GuiLogic {
                     return sb.toString().trim();
                 }
 
-                // --- NEW: Snooze / Unsnooze ---------------------------------
-                case SNOOZE: {
-                    // Expect: "<index> <+3d2h30m | 2025-09-20T09:00 | 2025-09-20 09:00 | 2025-09-20>"
-                    String[] aa = p.args.trim().split("\\s+", 2);
-                    if (aa.length < 2) {
-                        throw new BruhException("Usage: snooze <index> <+3d2h30m | 2025-09-20T09:00 | 2025-09-20 09:00 | 2025-09-20>");
-                    }
-                    int snoozeIdx = Parser.parseIndex(aa[0], "snooze");  // reuse your helper
-                    String when = aa[1].trim();
-                    if (when.startsWith("+")) {
-                        Duration d = TimeParsing.parseRelative(when);
-                        tasks.snoozeFor(snoozeIdx, TimeParsing.parseRelative(when));
-                    } else {
-                        LocalDateTime dt = TimeParsing.parseDateTime(when);
-                        tasks.snoozeUntil(snoozeIdx, TimeParsing.parseDateTime(when));
-                    }
-                    save();
-                    return "Snoozed this task until:\n" + "  " + tasks.get(snoozeIdx);
-                }
-                case UNSNOOZE: {
-                    int unsnoozeIdx = Parser.parseIndex(p.args, "unsnooze");
-                    tasks.unsnooze(unsnoozeIdx);
-                    save();
-                    return "Unsnoozed this task:\n" + "  " + tasks.get(unsnoozeIdx);
-                }
                 case RESCHED: {
                 // Usage: resched <index> <+Nd | YYYY-MM-DD | YYYY-MM-DDTHH:MM | YYYY-MM-DD HH:MM>
                 if (p.args.isEmpty()) {
