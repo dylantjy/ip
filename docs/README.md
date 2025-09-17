@@ -85,6 +85,14 @@ bye
 
 ---
 
+## Download & Run
+
+1. Install Java 17 (`java -version` → 17.x).
+2. Download `bruh.jar` from the Releases page.
+3. Open a terminal in the download folder and run: `java -jar bruh.jar`
+
+---
+
 ## Storage
 
 * File: `data/bruh.txt`
@@ -121,3 +129,6 @@ If you reused code or ideas, acknowledge them here (e.g., parsing helpers, date 
 ## About
 
 **Product name:** Bruh
+
+> Bruh is a student project. Not affiliated with or named “Duke.”
+
